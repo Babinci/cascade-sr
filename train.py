@@ -7,35 +7,41 @@ from FSRCNN import *
 from utils import *
 
 
-
-dataset = Images('../datasets', scale = .5)
+dataset = Images("../datasets", scale=0.5)
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 
-lr_cur =1e-3 #current lr
+lr_cur = 1e-3  # current lr
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = FSRCNN().to(device)
+model2 = Cascade()
 
+# criterion = nn.MSELoss()
+criterion = nn.L1Loss()
 
-
-criterion = nn.MSELoss()
-optimizer = optim.Adam([
-    {'params': model.first_part.parameters()},
-    {'params': model.mid_part.parameters()},
-    {'params': model.last_part.parameters(), 'lr': lr_cur * 0.1}
-], lr=lr_cur)
+optimizer = optim.Adam(
+    [
+        {"params": model.first_part.parameters()},
+        {"params": model.mid_part.parameters()},
+        {"params": model.last_part.parameters(), "lr": lr_cur * 0.1},
+    ],
+    lr=lr_cur,
+)
 
 epochs = 100
 
 for epoch in tqdm(range(epochs)):
-    for img, resized_img,_,_ in dataloader:
+    for img, resized_img2, resized_img4, resized_img8, _,_  in dataloader:
 
-        preds = model(resized_img)
-        loss = criterion(preds, img)
+        pred0, pred1, pred2 = model2(resized_img8)
         
+        L0 = criterion(pred0,resized_img4)
+        L1 = criterion(pred1, resized_img2)
+        L2 = criterion(pred2, img)
+        loss = L0+L1+L2
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
     print(loss)
-
