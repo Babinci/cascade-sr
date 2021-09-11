@@ -4,11 +4,21 @@ from torch.utils.data import Dataset
 import torchvision
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
+import random
 
 
 def resize_img(img, scale=2):
     scale = 1/scale
     return F.interpolate(img.unsqueeze(0), scale_factor=(scale, scale)).squeeze(0)
+
+
+def scale_img(img, p=0.8):
+    scaling_factors = [0.9, 0.8, 0.7,0.6]
+    choice = random.choice(scaling_factors)
+    if random.uniform(0,1) < 0.8:
+        return resize_img(img, scale = 1/choice)
+    else:
+        return img
 
 
 def crop_img(img, mult=2):
@@ -21,6 +31,12 @@ def crop_img(img, mult=2):
 
     return img
 
+def normalize_img(img):
+        normalize = torchvision.transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+        return normalize(img/255)
+
+def augment_img(img):
+    pass
 
 class Images(Dataset):
     def __init__(self, img_dir, ends=".png", scale=8):
@@ -30,11 +46,16 @@ class Images(Dataset):
     def __len__(self):
         return len(self.images)
 
+    
+
     def __getitem__(self, index):
         img_path = self.images[index]
         img = torchvision.io.read_image(img_path)
         # print(img.shape)
+        img = normalize_img(img)
+        img = scale_img(img)
         img = crop_img(img, mult = self.scale).to(torch.float)
+        
         # print(img.shape)
         resized_img2 = resize_img(img, scale=2).to(torch.float)
         resized_img4 = resize_img(img, scale=4).to(torch.float)
