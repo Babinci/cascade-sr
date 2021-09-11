@@ -68,3 +68,18 @@ class Cascade(nn.Module):
         third = self.third(second)
 
         return first, second, third
+
+
+class Cascade2(nn.Module):
+    def __init__(self, model):
+        super(Cascade2, self).__init__()
+        self.first = model
+        self.second = model
+        self.third = model
+
+    def forward(self, x):
+        first = self.first(x)
+        second = self.second(first)
+        third = self.third(second)
+
+        return first, second, third
