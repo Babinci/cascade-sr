@@ -7,14 +7,14 @@ from FSRCNN import *
 from utils import *
 
 
-dataset = Images("../datasets", scale=0.5)
+dataset = Images("../datasets", scale=8)
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 lr_cur = 1e-3  # current lr
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = FSRCNN().to(device)
-model2 = Cascade()
+# model2 = Cascade()
 
 # criterion = nn.MSELoss()
 criterion = nn.L1Loss()
@@ -27,7 +27,8 @@ optimizer = optim.Adam(
     ],
     lr=lr_cur,
 )
-
+model2= Cascade2(model)
+# optimizer = optim.Adam(lr=1e-4)
 epochs = 100
 
 for epoch in tqdm(range(epochs)):

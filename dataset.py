@@ -24,7 +24,7 @@ def crop_img(img, mult=2):
 
 class Images(Dataset):
     def __init__(self, img_dir, ends=".png", scale=8):
-        self.images = load_images_list(img_dir)
+        self.images = load_images_list(img_dir, ends=ends)
         self.scale = scale
 
     def __len__(self):
