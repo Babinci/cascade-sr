@@ -1,6 +1,6 @@
 import torch
 import os
-print(torch)
+# print(torch)
 
 
 def load_images_list(directory, ends='png'):

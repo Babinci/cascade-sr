@@ -76,3 +76,16 @@ class Images(Dataset):
         resized_img4 = resize_img(img, scale=4).to(torch.float)
         resized_img8 = resize_img(img, scale=8).to(torch.float)
         return img, resized_img2, resized_img4, resized_img8, img_path, index
+
+
+#dataset test
+def main():
+    dataset = Images("../datasets", scale=8)
+    dataloader = DataLoader(dataset, batch_size=8, shuffle=False)
+
+    for img, resized_img2, resized_img4, resized_img8, _, _ in dataloader:
+        print(img.shape)
+
+
+if __name__ == "__main__":
+    main()
