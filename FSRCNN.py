@@ -56,23 +56,8 @@ class FSRCNN(nn.Module):
 
 
 class Cascade(nn.Module):
-    def __init__(self):
-        super(Cascade, self).__init__()
-        self.first = FSRCNN()
-        self.second = FSRCNN()
-        self.third = FSRCNN()
-
-    def forward(self, x):
-        first = self.first(x)
-        second = self.second(first)
-        third = self.third(second)
-
-        return first, second, third
-
-
-class Cascade2(nn.Module):
     def __init__(self, model):
-        super(Cascade2, self).__init__()
+        super(Cascade, self).__init__()
         self.first = model
         self.second = model
         self.third = model
