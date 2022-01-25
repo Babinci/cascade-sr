@@ -49,15 +49,9 @@ def main():
             optimizer.step()
 
     #optimizer updating
-    lr_cur = lr_cur * (0.1 ** int( epoch / (epochs * 0.8) ) )
-    optimizer = optim.Adam(
-        [
-            {"params": base_model.first_part.parameters()},
-            {"params": base_model.mid_part.parameters()},
-            {"params": base_model.last_part.parameters(), "lr": lr_cur * 0.1},
-        ],
-        lr=lr_cur,
-    )
+    for g in optimizer.param_groups:
+        g['lr'] = g['lr'] * (0.1 ** int( epoch / (epochs * 0.8) ) )
+    
 
 
     writer.add_scalar('Loss/train', loss, epoch)
