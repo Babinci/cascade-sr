@@ -5,6 +5,8 @@ from tqdm import tqdm
 from dataset import *
 from FSRCNN import *
 from utils import *
+from test import *
+
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -70,6 +72,12 @@ def main():
                 val_loss.append(loss)
             avg_val_loss = torch.stack(val_loss).mean()
             writer.add_scalar('val_loss', avg_val_loss, epoch)
+
+        # PSNR on test set (currently only x4)
+        FSRCNN_metric_mean, model_metric_mean = calculate_metrics(model, final_list, device)
+        if epoch % 10:
+            print("FSRCNN_Metric: {}, Model_Metrc: {}".format(FSRCNN_metric_mean, model_metric_mean))
+
 
         #optimizer updating as in paper
         for g in optimizer.param_groups:

@@ -68,3 +68,12 @@ class Cascade(nn.Module):
         third = self.third(second)
 
         return first, second, third
+
+    def upscale_2(self, x):
+        return(self.third(x))
+    
+    def upscale_4(self, x):
+        x = self.second(x)
+        x = self.third(x)
+        return x
+
